@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReactServer2.Data;
 
 namespace ReactServer2.Migrations
 {
     [DbContext(typeof(ReactServer2Context))]
-    partial class ReactServer2ContextModelSnapshot : ModelSnapshot
+    [Migration("20210726182813_init32")]
+    partial class init32
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

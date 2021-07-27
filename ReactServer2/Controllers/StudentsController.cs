@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,6 @@ namespace ReactServer2.Controllers
         {
             _context = context;
         }
-
         // GET: api/Students
         [HttpGet]
         public async Task<ActionResult<StudentDto>> GetStudent(string txtSearch , int? pageNumber)
@@ -104,9 +104,19 @@ namespace ReactServer2.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent([FromForm]Student student , IFormFile file)
         {
             _context.Student.Add(student);
+            if (file != null)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Upload\Student", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+                student.url = "/Upload/Student/File/" + fileName;
+            }
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetStudent", new { id = student.id }, student);

@@ -12,5 +12,6 @@ namespace ReactServer2.Models
 		public string lastname { get; set;  }
 		public string nationalcode { get; set; }
 		public string address { get; set;  }
+		public string url { get; set; }
 	}
 }
