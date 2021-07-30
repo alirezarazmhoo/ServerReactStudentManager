@@ -13,5 +13,8 @@ namespace ReactServer2.Models
 		public string nationalcode { get; set; }
 		public string address { get; set;  }
 		public string url { get; set; }
+
+		public int MajorId { get; set;  }
+		public virtual Major Major { get; set; }
 	}
 }

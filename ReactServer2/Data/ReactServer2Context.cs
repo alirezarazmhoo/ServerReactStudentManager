@@ -15,5 +15,7 @@ namespace ReactServer2.Data
         }
 
         public DbSet<ReactServer2.Models.Student> Student { get; set; }
+        public DbSet<ReactServer2.Models.Major>  Majors { get; set; }
+
     }
 }

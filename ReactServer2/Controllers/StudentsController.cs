@@ -31,16 +31,12 @@ namespace ReactServer2.Controllers
             bool hanext = true;
             try
 			{
-                    pageNumber = pageNumber == null ? 1 : pageNumber;
+                 
 				if (string.IsNullOrEmpty(txtSearch))
 				{
-                    if(await _context.Student.Skip((pageNumber.Value - 1) * 2).Take(2).CountAsync() == 0)
-					{
-                        pageNumber -= 1;
-                                   hanext = false; 
-                    }
+                  
 				
-                    students.AddRange(await _context.Student.Skip((pageNumber.Value - 1) * 2).Take(10).ToListAsync());
+                    students.AddRange(await _context.Student.Include(s=>s.Major).ToListAsync());
                     studentDto.students = students; 
                   studentDto.hasNext = hanext;
                     return studentDto;
@@ -78,24 +74,30 @@ namespace ReactServer2.Controllers
 
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost()]
+        [HttpPost]
         [Route("EditStudent")]
-
-        public async Task<IActionResult> PutStudent( Student student)
+        public async Task<IActionResult> PutStudent([FromForm] Student student, IFormFile file)
         {
-          
-
-            _context.Entry(student).State = EntityState.Modified;
+			if (file != null)
+			{
+				var fileName = Path.GetFileName(file.FileName);
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Upload\Student", fileName);
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					file.CopyTo(stream);
+				}
+				student.url = "/Upload/Student/" + fileName;
+			}
+			_context.Entry(student).State = EntityState.Modified;
 
             try
             {
+             
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-               
                     throw;
-                
             }
 
             return NoContent();
@@ -115,7 +117,7 @@ namespace ReactServer2.Controllers
                 {
                     file.CopyTo(stream);
                 }
-                student.url = "/Upload/Student/File/" + fileName;
+                student.url = "/Upload/Student/" + fileName;
             }
             await _context.SaveChangesAsync();
 
@@ -138,6 +140,10 @@ namespace ReactServer2.Controllers
 
             return NoContent();
         }
+        
+
+
+
 
         private bool StudentExists(int id)
         {
