@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ReactServer2.Data;
+using ReactServer2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,13 @@ namespace ReactServer2.Controllers
 		[HttpGet]
 		public IActionResult Get()
 		{
-			return Ok(_context.Majors.ToList());
+			MajorDto  majorDto = new MajorDto();
+			List<Major> majors = new List<Major>();
+
+			majors.AddRange(_context.Majors.ToList());
+			majorDto.Majors = majors;
+
+			return Ok(majorDto);
 		}
 
 	}
