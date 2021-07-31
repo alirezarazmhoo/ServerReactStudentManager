@@ -44,7 +44,7 @@ namespace ReactServer2.Controllers
                 }
 				else
 				{
-                    students.AddRange(await _context.Student.ToListAsync());
+                    students.AddRange(await _context.Student.Include(s => s.Major).ToListAsync());
                     studentDto.students = students.Where(s=>s.name.Contains(txtSearch)).ToList();
                     studentDto.hasNext = hanext;
 
